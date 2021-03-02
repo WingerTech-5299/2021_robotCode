@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWMTalonSRX;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -50,17 +51,14 @@ import edu.wpi.first.wpilibj.I2C;
  */
 public class Robot extends TimedRobot {
 
-<<<<<<< Updated upstream
-  WPI_TalonSRX leftControllerB = new WPI_TalonSRX();
+  While true(){
+
+  }
+   
+  PWMTalonSRX leftControllerB = new PWMTalonSRX(0);
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX();
   WPI_TalonSRX leftControllerF = new WPI_TalonSRX();
   WPI_TalonSRX rightControllerF = new WPI_TalonSRX();
-=======
-  WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
-  WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
-  WPI_TalonSRX leftControllerF = new WPI_TalonSRX(11);
-  WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
->>>>>>> Stashed changes
 
   Joystick joy_silv = new Joystick(0);
   XboxController Xbox = new XboxController(1);
