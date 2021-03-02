@@ -50,15 +50,11 @@ import edu.wpi.first.wpilibj.I2C;
  * project.
  */
 public class Robot extends TimedRobot {
-
-  While true(){
-
-  }
    
   PWMTalonSRX leftControllerB = new PWMTalonSRX(0);
-  WPI_TalonSRX rightControllerB = new WPI_TalonSRX();
-  WPI_TalonSRX leftControllerF = new WPI_TalonSRX();
-  WPI_TalonSRX rightControllerF = new WPI_TalonSRX();
+  PWMTalonSRX rightControllerB = new PWMTalonSRX(1);
+  PWMTalonSRX leftControllerF = new PWMTalonSRX(2);
+  PWMTalonSRX rightControllerF = new PWMTalonSRX(3);
 
   Joystick joy_silv = new Joystick(0);
   XboxController Xbox = new XboxController(1);
@@ -88,11 +84,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
   }
-<<<<<<< Updated upstream
-DifferentialDrive drive = new DifferentialDrive(leftController, rightController);
-=======
   MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
->>>>>>> Stashed changes
 
 
 
