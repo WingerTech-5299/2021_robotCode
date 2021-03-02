@@ -31,10 +31,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-<<<<<<< Updated upstream
-=======
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
->>>>>>> Stashed changes
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.cscore.VideoSource;
@@ -55,6 +52,8 @@ public class Robot extends TimedRobot {
   PWMTalonSRX rightControllerB = new PWMTalonSRX(1);
   PWMTalonSRX leftControllerF = new PWMTalonSRX(2);
   PWMTalonSRX rightControllerF = new PWMTalonSRX(3);
+
+  MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
 
   Joystick joy_silv = new Joystick(0);
   XboxController Xbox = new XboxController(1);
@@ -84,7 +83,6 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
   }
-  MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
 
 
 
