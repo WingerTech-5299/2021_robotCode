@@ -13,16 +13,12 @@ import java.sql.DriverAction;
 import javax.annotation.meta.When;
 import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.*;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWMTalonSRX;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -46,11 +42,12 @@ import edu.wpi.first.wpilibj.I2C;
  * project.
  */
 public class Robot extends TimedRobot {
+   
+  PWMTalonSRX leftControllerB = new PWMTalonSRX(0);
+  PWMTalonSRX rightControllerB = new PWMTalonSRX(1);
+  PWMTalonSRX leftControllerF = new PWMTalonSRX(2);
+  PWMTalonSRX rightControllerF = new PWMTalonSRX(3);
 
-  WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
-  WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
-  WPI_TalonSRX leftControllerF = new WPI_TalonSRX(11);
-  WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
 
   Joystick joy_silv = new Joystick(0);
   XboxController Xbox = new XboxController(1);
@@ -80,11 +77,6 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
   }
-<<<<<<< Updated upstream
-DifferentialDrive drive = new DifferentialDrive(leftController, rightController);
-=======
-  MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
->>>>>>> Stashed changes
 
 
 
@@ -137,13 +129,13 @@ DifferentialDrive drive = new DifferentialDrive(leftController, rightController)
   @Override
   public void teleopInit() {
 
-    leftController.configFactoryDefault();
-    rightController.configFactoryDefault();  
+    // leftController.configFactoryDefault();
+    // rightController.configFactoryDefault();  
 
-    leftController.setInverted(false);
-    rightController.setInverted(true);
+    // leftController.setInverted(false);
+    // rightController.setInverted(true);
     
-    drive.setRightSideInverted(false);
+    // drive.setRightSideInverted(false);
 
   }
 
@@ -162,8 +154,6 @@ DifferentialDrive drive = new DifferentialDrive(leftController, rightController)
    if (Math.abs(turn) < 0.4) {
      turn = 0;
    }
-
-   drive.arcadeDrive(forward, turn);
 
   }
 
