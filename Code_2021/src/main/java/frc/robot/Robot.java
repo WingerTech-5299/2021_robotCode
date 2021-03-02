@@ -8,6 +8,35 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
+import java.sql.Driver;
+import java.sql.DriverAction;
+import javax.annotation.meta.When;
+import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.*;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Joystick.ButtonType;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.cscore.VideoSource;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.I2C;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,6 +45,19 @@ import edu.wpi.first.networktables.*;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  WPI_TalonSRX leftControllerB = new WPI_TalonSRX();
+  WPI_TalonSRX rightControllerB = new WPI_TalonSRX();
+  WPI_TalonSRX leftControllerF = new WPI_TalonSRX();
+  WPI_TalonSRX rightControllerF = new WPI_TalonSRX();
+
+  Joystick joy_silv = new Joystick(0);
+  XboxController Xbox = new XboxController(1);
+
+  private double forward = 0.0;
+  private double turn = 0.0;
+  private double backward = 0.0;
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -30,12 +72,17 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
   }
+DifferentialDrive drive = new DifferentialDrive(leftController, rightController);
+
+
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -83,11 +130,37 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+
+    leftController.configFactoryDefault();
+    rightController.configFactoryDefault();  
+
+    leftController.setInverted(false);
+    rightController.setInverted(true);
+    
+    drive.setRightSideInverted(false);
+
+  }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    forward = +.8* Xbox.getY();  
+    turn = +.8 * Xbox.getX();
+    backward = +.8* Xbox.getY();
+
+    if (Math.abs(forward) < 0.4) {
+     forward = 0;
+   }
+
+   if (Math.abs(turn) < 0.4) {
+     turn = 0;
+   }
+
+   drive.arcadeDrive(forward, turn);
+
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
