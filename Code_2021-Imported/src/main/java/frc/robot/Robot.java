@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
@@ -16,15 +21,42 @@ import edu.wpi.first.networktables.*;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  private double forward = 0.0;
+  private double turn = 0.0;
+  private double backward = 0.0;
+
+
+  WPI_TalonSRX leftControllerB = new WPI_TalonSRX(11);
+  WPI_TalonSRX rightControllerB = new WPI_TalonSRX(12);
+  WPI_TalonSRX leftControllerF = new WPI_TalonSRX(16);
+  WPI_TalonSRX rightControllerF = new WPI_TalonSRX(17);
+
+  Joystick Joy = new Joystick(0);
+  XboxController Xbox = new XboxController(1);
+
+  
+
+  forward = +.8* Xbox.getY();  
+    turn = +.8* Xbox.getX();
+    backward = +.8* Xbox.getY();
+
+    if (Math.abs(forward) < 0.4) {
+      
+			forward = 0;
+    }
+			turn = 0;
+    }
+   
+  
+MecanumDrive myDrive = new MecanumDrive(WPMSpeedController leftControllerB, WPMSpeedController leftControllerF, WPMSpeedController rightControllerB, WPMSpeedController rightControllerF);
+
+
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-  private boolean m_limelightHasValidTarget = false;
-  private double m_LimelightDriveCommand = 0.0;
-  private double m_limelightDriveSCommand = 0.0; //The S signifies side driving (Strafing)
-  private double m_limelightSteerCommand = 0.0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -32,11 +64,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    private void mecanumDrive_Cartesian(double x, double y, double twist){} 
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    
   }
-
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
    * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
@@ -45,7 +80,7 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -67,9 +102,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-
-    updateLimelightTracking();
-
     switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
@@ -87,7 +119,14 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    
+    
+  }
+  mydrive.mecanumDrive_Cartesian(Joy.getX(), Joy.getY(), Joy.getTwist());
+  
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
@@ -104,34 +143,4 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
-
-  public void updateLimelightTracking(){
-
-    final double STEER_K = 0.0;
-    final double DRIVE_K = 0.0;
-    final double DRIVES_K = 0.0; //The S signifies side driving (Strafing)
-
-    final double MAX_DRIVE = 0.0;
-
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    Double tv = table.getEntry("tv").getDouble(0);
-    Double tx = table.getEntry("tx").getDouble(0);
-    Double ty = table.getEntry("ty").getDouble(0);
-    Double ta = table.getEntry("ta").getDouble(0);
-    Double ts = table.getEntry("ts").getDouble(0);
-
-    if (tv < 1.0){
-
-      m_limelightHasValidTarget = false;
-      m_LimelightDriveCommand = 0.0;
-      m_limelightDriveSCommand = 0.0;
-      m_limelightSteerCommand = 0.0;
-      return;
-    }
-
-    m_limelightHasValidTarget = true;
-
-    double DriveS_cmd = tx * DRIVES_K;
-    m_limelightDriveSCommand = DriveS_cmd;
-  }
 }
