@@ -30,10 +30,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-<<<<<<< Updated upstream
-=======
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
->>>>>>> Stashed changes
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.cscore.VideoSource;
@@ -50,17 +47,10 @@ import edu.wpi.first.wpilibj.I2C;
  */
 public class Robot extends TimedRobot {
 
-<<<<<<< Updated upstream
-  WPI_TalonSRX leftControllerB = new WPI_TalonSRX();
-  WPI_TalonSRX rightControllerB = new WPI_TalonSRX();
-  WPI_TalonSRX leftControllerF = new WPI_TalonSRX();
-  WPI_TalonSRX rightControllerF = new WPI_TalonSRX();
-=======
   WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
   WPI_TalonSRX leftControllerF = new WPI_TalonSRX(11);
   WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
->>>>>>> Stashed changes
 
   Joystick joy_silv = new Joystick(0);
   XboxController Xbox = new XboxController(1);
