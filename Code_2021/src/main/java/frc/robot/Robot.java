@@ -13,11 +13,6 @@ import java.sql.DriverAction;
 import javax.annotation.meta.When;
 import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.*;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -135,13 +130,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
 
-    leftController.configFactoryDefault();
-    rightController.configFactoryDefault();  
+    // leftController.configFactoryDefault();
+    // rightController.configFactoryDefault();  
 
-    leftController.setInverted(false);
-    rightController.setInverted(true);
+    // leftController.setInverted(false);
+    // rightController.setInverted(true);
     
-    drive.setRightSideInverted(false);
+    // drive.setRightSideInverted(false);
 
   }
 
@@ -160,8 +155,6 @@ public class Robot extends TimedRobot {
    if (Math.abs(turn) < 0.4) {
      turn = 0;
    }
-
-   drive.arcadeDrive(forward, turn);
 
   }
 
