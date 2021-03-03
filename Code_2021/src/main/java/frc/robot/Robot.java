@@ -8,31 +8,16 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
-import java.sql.Driver;
 import java.sql.DriverAction;
 import javax.annotation.meta.When;
-import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PWMTalonSRX;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.cscore.VideoSource;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.I2C;
 
 /**
@@ -43,10 +28,10 @@ import edu.wpi.first.wpilibj.I2C;
  */
 public class Robot extends TimedRobot {
    
-  PWMTalonSRX leftControllerB = new PWMTalonSRX(0);
-  PWMTalonSRX rightControllerB = new PWMTalonSRX(1);
-  PWMTalonSRX leftControllerF = new PWMTalonSRX(2);
-  PWMTalonSRX rightControllerF = new PWMTalonSRX(3);
+  WPI_TalonSRX leftControllerF = new WPI_TalonSRX(11);
+  WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
+  WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
+  WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
 
 
   Joystick joy_silv = new Joystick(0);
