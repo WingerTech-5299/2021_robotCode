@@ -10,12 +10,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 import java.sql.DriverAction;
 import javax.annotation.meta.When;
+
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.I2C;
@@ -33,9 +38,10 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
 
+  MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
 
-  Joystick joy_silv = new Joystick(0);
-  XboxController Xbox = new XboxController(1);
+  Joystick joy = new Joystick(1);
+  XboxController Xbox = new XboxController(0);
 
   private double forward = 0.0;
   private double turn = 0.0;
@@ -127,10 +133,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-    forward = +.8* Xbox.getY();  
-    turn = +.8 * Xbox.getX();
-    backward = +.8* Xbox.getY();
+    
+    drive.driveCartesian(0.5*Xbox.getRawAxis(4), -0.5*Xbox.getRawAxis(5), 0.5*Xbox.getRawAxis(0));
 
     if (Math.abs(forward) < 0.4) {
      forward = 0;
