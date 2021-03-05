@@ -8,18 +8,16 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
-import java.sql.DriverAction;
-import javax.annotation.meta.When;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -37,15 +35,20 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
   WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
+  WPI_VictorSPX intakeController = new WPI_VictorSPX(15);
 
   MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
 
   Joystick joy = new Joystick(1);
   XboxController Xbox = new XboxController(0);
+  
+  JoystickButton btnIntake = new JoystickButton(joy, 0);
+  JoystickButton btnIntakeSpeed = new JoystickButton(joy, 1);
+  JoystickButton btnToggleIntakeReverse = new JoystickButton(joy, 2);
 
-  private double forward = 0.0;
-  private double turn = 0.0;
-  private double backward = 0.0;
+  Double btnDriveFB = Xbox.getRawAxis(5);
+  Double btnDriveSpin = Xbox.getRawAxis(0);
+  Double btnDriveLR = Xbox.getRawAxis(4);
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -134,15 +137,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     
-    drive.driveCartesian(0.5*Xbox.getRawAxis(4), -0.5*Xbox.getRawAxis(5), 0.5*Xbox.getRawAxis(0));
-
-    if (Math.abs(forward) < 0.4) {
-     forward = 0;
-   }
-
-   if (Math.abs(turn) < 0.4) {
-     turn = 0;
-   }
+    drive.driveCartesian(0.5*btnDriveLR, -0.5*btnDriveFB, 0.5*btnDriveSpin);
 
   }
 
