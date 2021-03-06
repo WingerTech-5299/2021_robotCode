@@ -15,13 +15,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.Joystick.ButtonType;
-import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.SPI;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -39,16 +37,8 @@ public class Robot extends TimedRobot {
 
   MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
 
-  Joystick joy = new Joystick(1);
   XboxController Xbox = new XboxController(0);
-  
-  JoystickButton btnIntake = new JoystickButton(joy, 0);
-  JoystickButton btnIntakeSpeed = new JoystickButton(joy, 1);
-  JoystickButton btnToggleIntakeReverse = new JoystickButton(joy, 2);
-
-  Double btnDriveFB = Xbox.getRawAxis(5);
-  Double btnDriveSpin = Xbox.getRawAxis(0);
-  Double btnDriveLR = Xbox.getRawAxis(4);
+  Joystick joy = new Joystick(1);
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -136,8 +126,31 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+
+    Boolean btnIntakeReverse = joy.getRawButton(1);
+    Boolean btnIntake = joy.getRawButton(0);
+    Double btnIntakeSpeed = joy.getRawAxis(3);
+
+    if (btnIntake == true){
+
+      intakeController.set(btnIntakeSpeed);
+
+    }else if (btnIntakeReverse = true){
+
+      intakeController.set(-btnIntakeSpeed);
+
+    }else if (btnIntake == false){
+
+      intakeController.set(0);
+
+    }
     
-    drive.driveCartesian(0.5*btnDriveLR, -0.5*btnDriveFB, 0.5*btnDriveSpin);
+    Double btnDriveFB = Xbox.getRawAxis(5);
+    Double btnDriveSpin = Xbox.getRawAxis(0);
+    Double btnDriveLR = Xbox.getRawAxis(4);
+
+    drive.driveCartesian(0.5*btnDriveLR, 0.5*btnDriveFB, 0.5*btnDriveSpin);
 
   }
 
