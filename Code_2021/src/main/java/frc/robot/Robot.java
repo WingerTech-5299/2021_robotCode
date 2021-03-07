@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -49,6 +50,14 @@ public class Robot extends TimedRobot {
   Double btnDriveFB = Xbox.getRawAxis(5);
   Double btnDriveSpin = Xbox.getRawAxis(0);
   Double btnDriveLR = Xbox.getRawAxis(4);
+
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  Double tv = table.getEntry("tv").getDouble(0);
+  Double tx = table.getEntry("tx").getDouble(0);
+  Double ty = table.getEntry("ty").getDouble(0);
+  Double ta = table.getEntry("ta").getDouble(0);
+  Double ts = table.getEntry("ts").getDouble(0);
+
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -108,6 +117,23 @@ public class Robot extends TimedRobot {
 
     updateLimelightTracking();
 
+    if (tv == 1){
+
+      if (Math.abs(tx) < 0.1){
+
+        if (tx > 0){
+
+          drive.driveCartesian(0.5, 0, 0);
+        }else{
+
+          drive.driveCartesian(-0.5, 0 ,0);
+        }
+      }
+    }else{
+
+      drive.driveCartesian(0,0,0);
+    }
+    
     switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
@@ -159,18 +185,17 @@ public class Robot extends TimedRobot {
 
   public void updateLimelightTracking(){
 
+    tv = table.getEntry("tv").getDouble(0);
+    tx = table.getEntry("tx").getDouble(0);
+    ty = table.getEntry("ty").getDouble(0);
+    ta = table.getEntry("ta").getDouble(0);
+    ts = table.getEntry("ts").getDouble(0);
+
     final double STEER_K = 0.0;
     final double DRIVE_K = 0.0;
     final double DRIVES_K = 0.0; //The S signifies side driving (Strafing)
 
     final double MAX_DRIVE = 0.0;
-
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    Double tv = table.getEntry("tv").getDouble(0);
-    Double tx = table.getEntry("tx").getDouble(0);
-    Double ty = table.getEntry("ty").getDouble(0);
-    Double ta = table.getEntry("ta").getDouble(0);
-    Double ts = table.getEntry("ts").getDouble(0);
 
     if (tv < 1.0){
 
