@@ -132,15 +132,19 @@ public class Robot extends TimedRobot {
     Boolean btnIntake = joy.getRawButton(0);
     Double btnIntakeSpeed = joy.getRawAxis(3);
 
-    if (btnIntake == true){
+    if (joy.getRawButton(1) == true){
 
-      intakeController.set(btnIntakeSpeed);
+      intakeController.set(0.7 * btnIntakeSpeed);
 
-    }else if (btnIntakeReverse = true){
+    }else if (btnIntakeReverse == true){
 
-      intakeController.set(-btnIntakeSpeed);
+      intakeController.set(-0.7 * btnIntakeSpeed);
 
     }else if (btnIntake == false){
+
+      intakeController.set(0);
+
+    }else if (btnIntakeReverse == false){
 
       intakeController.set(0);
 
@@ -150,7 +154,7 @@ public class Robot extends TimedRobot {
     Double btnDriveSpin = Xbox.getRawAxis(0);
     Double btnDriveLR = Xbox.getRawAxis(4);
 
-    drive.driveCartesian(0.5*btnDriveLR, 0.5*btnDriveFB, 0.5*btnDriveSpin);
+    drive.driveCartesian(0.5*btnDriveLR, -0.5*btnDriveFB, 0.5*btnDriveSpin);
 
   }
 
