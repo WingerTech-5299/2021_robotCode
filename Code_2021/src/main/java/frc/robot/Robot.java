@@ -57,11 +57,6 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private boolean m_limelightHasValidTarget = false;
-  private double m_LimelightDriveCommand = 0.0;
-  private double m_limelightDriveSCommand = 0.0; //The S signifies side driving (Strafing)
-  private double m_limelightSteerCommand = 0.0;
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
