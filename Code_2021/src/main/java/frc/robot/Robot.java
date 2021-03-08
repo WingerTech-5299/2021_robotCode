@@ -190,7 +190,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {}
 
-  public void updateLimelightTracking(Double r){
+  public void updateLimelightTracking(){
+
 
     tv = table.getEntry("tv").getDouble(0);
     tx = table.getEntry("tx").getDouble(0);
