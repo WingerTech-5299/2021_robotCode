@@ -40,6 +40,10 @@ public class Robot extends TimedRobot {
   XboxController Xbox = new XboxController(0);
   Joystick joy = new Joystick(1);
 
+  Boolean btnIntakeReverse = joy.getRawButton(1);
+  Boolean btnIntake = joy.getRawButton(0);
+  Double btnIntakeSpeed = joy.getRawAxis(3);
+
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   Double tv = table.getEntry("tv").getDouble(0);
   Double tx = table.getEntry("tx").getDouble(0);
@@ -138,14 +142,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
 
-    // leftController.configFactoryDefault();
-    // rightController.configFactoryDefault();  
-
-    // leftController.setInverted(false);
-    // rightController.setInverted(true);
-    
-    // drive.setRightSideInverted(false);
-
   }
 
   /** This function is called periodically during operator control. */
@@ -153,11 +149,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
 
-    Boolean btnIntakeReverse = joy.getRawButton(1);
-    Boolean btnIntake = joy.getRawButton(0);
-    Double btnIntakeSpeed = joy.getRawAxis(3);
+    btnIntakeReverse = joy.getRawButton(1);
+    btnIntake = joy.getRawButton(0);
+    btnIntakeSpeed = joy.getRawAxis(3);
 
-    if (joy.getRawButton(1) == true){
+    if (btnIntake == true){
 
       intakeController.set(0.7 * btnIntakeSpeed);
 
@@ -206,25 +202,5 @@ public class Robot extends TimedRobot {
     ty = table.getEntry("ty").getDouble(0);
     ta = table.getEntry("ta").getDouble(0);
     ts = table.getEntry("ts").getDouble(0);
-
-    final double STEER_K = 0.0;
-    final double DRIVE_K = 0.0;
-    final double DRIVES_K = 0.0; //The S signifies side driving (Strafing)
-
-    final double MAX_DRIVE = 0.0;
-
-    if (tv < 1.0){
-
-      m_limelightHasValidTarget = false;
-      m_LimelightDriveCommand = 0.0;
-      m_limelightDriveSCommand = 0.0;
-      m_limelightSteerCommand = 0.0;
-      return;
-    }
-
-    m_limelightHasValidTarget = true;
-
-    double DriveS_cmd = tx * DRIVES_K;
-    m_limelightDriveSCommand = DriveS_cmd;
   }
 }
