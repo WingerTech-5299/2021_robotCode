@@ -121,16 +121,10 @@ public class Robot extends TimedRobot {
 
       drive.driveCartesian(0,0,0);
     }
-    
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+
+    double wheelCircumference = 15.24 * Math.PI;
+    double ballDistance = 0.451 * Math.abs(Math.tan(tx));
+    double wheelTurnsToBall = ballDistance / wheelCircumference;
   }
 
   /** This function is called once when teleop is enabled. */
@@ -144,8 +138,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
 
-    btnIntakeReverse = joy.getRawButton(1);
-    btnIntake = joy.getRawButton(0);
+    btnIntakeReverse = joy.getRawButton(2);
+    btnIntake = joy.getRawButton(1);
     btnIntakeSpeed = joy.getRawAxis(3);
 
     if (btnIntake == true){
