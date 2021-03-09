@@ -35,16 +35,18 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
   WPI_VictorSPX intakeController = new WPI_VictorSPX(15);
 
-  
+  XboxController Xbox = new XboxController(0);
+    Joystick joy = new Joystick(1);
+
+    Boolean btnIntakeReverse = joy.getRawButton(1);
+    Boolean btnIntake = joy.getRawButton(0);
+    Double btnIntakeSpeed = joy.getRawAxis(3);
+
+    Double btnDriveFB = Xbox.getRawAxis(5);
+    Double btnDriveSpin = Xbox.getRawAxis(0);
+    Double btnDriveLR = Xbox.getRawAxis(4);  
 
   MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
-
-  XboxController Xbox = new XboxController(0);
-  Joystick joy = new Joystick(1);
-
-  Boolean btnIntakeReverse = joy.getRawButton(1);
-  Boolean btnIntake = joy.getRawButton(0);
-  Double btnIntakeSpeed = joy.getRawAxis(3);
 
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   Double tv = table.getEntry("tv").getDouble(0);
@@ -139,7 +141,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-
+    btnDriveFB = Xbox.getRawAxis(5);
+    btnDriveSpin = Xbox.getRawAxis(0);
+    btnDriveLR = Xbox.getRawAxis(4);
     btnIntakeReverse = joy.getRawButton(2);
     btnIntake = joy.getRawButton(1);
     btnIntakeSpeed = joy.getRawAxis(3);
@@ -161,10 +165,6 @@ public class Robot extends TimedRobot {
       intakeController.set(0);
 
     }
-    
-    Double btnDriveFB = Xbox.getRawAxis(5);
-    Double btnDriveSpin = Xbox.getRawAxis(0);
-    Double btnDriveLR = Xbox.getRawAxis(4);
 
     drive.driveCartesian(0.5*btnDriveLR, -0.5*btnDriveFB, 0.5*btnDriveSpin);
 
