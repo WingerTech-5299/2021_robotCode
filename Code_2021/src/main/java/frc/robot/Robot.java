@@ -107,8 +107,8 @@ public class Robot extends TimedRobot {
     tv = table.getEntry("tv").getDouble(0);
     tx = table.getEntry("tx").getDouble(0);
     ty = table.getEntry("ty").getDouble(0);
-    ta = table.getEntry("ta").getDouble(0);
-    ts = table.getEntry("ts").getDouble(0);
+    // ta = table.getEntry("ta").getDouble(0);
+    // ts = table.getEntry("ts").getDouble(0);
 
 
 
@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
       drive.driveCartesian(0,0,0);
     }
 
-    double wheelCircumference = 15.24 * Math.PI;
+    double wheelCircumference = 0.1524 * Math.PI;
     double ballDistance = 0.451 * Math.abs(Math.tan(tx));
     double wheelTurnsToBall = ballDistance / wheelCircumference;
   }
