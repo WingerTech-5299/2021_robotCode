@@ -6,20 +6,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.wpilibj.kinematics.*;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.SPI;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -36,15 +33,15 @@ public class Robot extends TimedRobot {
   WPI_VictorSPX intakeController = new WPI_VictorSPX(15);
 
   XboxController Xbox = new XboxController(0);
-    Joystick joy = new Joystick(1);
+  Joystick joy = new Joystick(1);
 
-    Boolean btnIntakeReverse = joy.getRawButton(1);
-    Boolean btnIntake = joy.getRawButton(0);
-    Double btnIntakeSpeed = joy.getRawAxis(3);
+  Boolean btnIntakeReverse = joy.getRawButton(1);
+  Boolean btnIntake = joy.getRawButton(0);
+  Double btnIntakeSpeed = joy.getRawAxis(3);
 
-    Double btnDriveFB = Xbox.getRawAxis(5);
-    Double btnDriveSpin = Xbox.getRawAxis(0);
-    Double btnDriveLR = Xbox.getRawAxis(4);  
+  Double btnDriveFB = Xbox.getRawAxis(5);
+  Double btnDriveSpin = Xbox.getRawAxis(0);
+  Double btnDriveLR = Xbox.getRawAxis(4);  
 
   MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
 
@@ -107,7 +104,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    updateLimelightTracking();
+    tv = table.getEntry("tv").getDouble(0);
+    tx = table.getEntry("tx").getDouble(0);
+    ty = table.getEntry("ty").getDouble(0);
+    ta = table.getEntry("ta").getDouble(0);
+    ts = table.getEntry("ts").getDouble(0);
+
+
 
     if (tv == 1){
 
@@ -186,13 +189,4 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {}
 
-  public void updateLimelightTracking(){
-
-
-    tv = table.getEntry("tv").getDouble(0);
-    tx = table.getEntry("tx").getDouble(0);
-    ty = table.getEntry("ty").getDouble(0);
-    ta = table.getEntry("ta").getDouble(0);
-    ts = table.getEntry("ts").getDouble(0);
-  }
 }
