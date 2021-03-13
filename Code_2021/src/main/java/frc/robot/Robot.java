@@ -6,10 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.kinematics.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 
 import com.ctre.phoenix.motorcontrol.can.*;
@@ -107,10 +107,8 @@ public class Robot extends TimedRobot {
     tv = table.getEntry("tv").getDouble(0);
     tx = table.getEntry("tx").getDouble(0);
     ty = table.getEntry("ty").getDouble(0);
-    // ta = table.getEntry("ta").getDouble(0);
-    // ts = table.getEntry("ts").getDouble(0);
-
-
+    ta = table.getEntry("ta").getDouble(0);
+    ts = table.getEntry("ts").getDouble(0);
 
     if (tv == 1){
 
@@ -119,9 +117,13 @@ public class Robot extends TimedRobot {
         if (tx > 0){
 
           drive.driveCartesian(0.5, 0, 0);
+
+          return;
         }else{
 
           drive.driveCartesian(-0.5, 0 ,0);
+
+          return;
         }
       }
     }else{
@@ -132,6 +134,11 @@ public class Robot extends TimedRobot {
     double wheelCircumference = 0.1524 * Math.PI;
     double ballDistance = 0.451 * Math.abs(Math.tan(tx));
     double wheelTurnsToBall = ballDistance / wheelCircumference;
+
+    if (ballDistance > 0){
+
+      drive.driveCartesian(0, 0.5, 0);
+    }
   }
 
   /** This function is called once when teleop is enabled. */
