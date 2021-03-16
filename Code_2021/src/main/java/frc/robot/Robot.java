@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.networktables.*;
 
@@ -131,13 +130,15 @@ public class Robot extends TimedRobot {
       drive.driveCartesian(0,0,0);
     }
 
+    
+
     double wheelCircumference = 0.1524 * Math.PI;
     double ballDistance = 0.451 * Math.abs(Math.tan(tx));
     double wheelTurnsToBall = ballDistance / wheelCircumference;
 
     if (ballDistance > 0){
 
-      drive.driveCartesian(0, 0.5, 0);
+      drive.driveCartesian(0, wheelTurnsToBall*0.5, 0);
     }
   }
 
