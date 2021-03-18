@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.networktables.*;
 
+import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -30,6 +31,8 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
   WPI_VictorSPX intakeController = new WPI_VictorSPX(15);
+  
+  //Faults _faults = new Faults();
 
   XboxController Xbox = new XboxController(0);
   Joystick joy = new Joystick(1);
@@ -50,7 +53,6 @@ public class Robot extends TimedRobot {
   Double ty = table.getEntry("ty").getDouble(0);
   Double ta = table.getEntry("ta").getDouble(0);
   Double ts = table.getEntry("ts").getDouble(0);
-
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -108,6 +110,8 @@ public class Robot extends TimedRobot {
     ty = table.getEntry("ty").getDouble(0);
     ta = table.getEntry("ta").getDouble(0);
     ts = table.getEntry("ts").getDouble(0);
+
+
 
     if (tv == 1){
 
