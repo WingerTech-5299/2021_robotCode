@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.networktables.*;
 
 import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -32,7 +33,9 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
   WPI_VictorSPX intakeController = new WPI_VictorSPX(15);
   
-  //Faults _faults = new Faults();
+  Faults _faults = new Faults();
+
+  ErrorCode = leftControllerB.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
 
   XboxController Xbox = new XboxController(0);
   Joystick joy = new Joystick(1);
@@ -150,6 +153,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
 
+    leftControllerB.setSensorPhase(true);
+    rightControllerB.setSensorPhase(true);
+    
   }
 
   /** This function is called periodically during operator control. */
