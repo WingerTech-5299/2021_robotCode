@@ -7,9 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import io.github.pseudoresonance.pixy2api.Pixy2;
+import io.github.pseudoresonance.pixy2api.Pixy2.LinkType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.SPI;
 
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -35,7 +38,9 @@ public class Robot extends TimedRobot {
   
   Faults _faults = new Faults();
 
-  ErrorCode = leftControllerB.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+  Pixy2 pixy = Pixy2.createInstance(LinkType.SPI);
+
+  //ErrorCode = leftControllerB.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
 
   XboxController Xbox = new XboxController(0);
   Joystick joy = new Joystick(1);
