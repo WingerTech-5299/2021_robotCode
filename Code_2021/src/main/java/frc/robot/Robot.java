@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.networktables.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 /**
@@ -99,6 +101,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
+    intakeController.setInverted(true);
+
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
@@ -109,27 +114,22 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
 
     tv = table.getEntry("tv").getDouble(0);
-    tx = table.getEntry("tx").getDouble(0);
     ty = table.getEntry("ty").getDouble(0);
     ta = table.getEntry("ta").getDouble(0);
     ts = table.getEntry("ts").getDouble(0);
-
-
+    
+    intakeController.set(1);
 
     if (tv == 1){
 
-      if (Math.abs(tx) < 0.1){
+      while (Math.abs(tx) > 0){
 
-        if (tx > 0){
+        if(tx > 0){
 
-          drive.driveCartesian(0.5, 0, 0);
-
-          return;
+          drive.driveCartesian(0.5, 0, 0.04);
         }else{
 
-          drive.driveCartesian(-0.5, 0 ,0);
-
-          return;
+          drive.driveCartesian(-0.5, 0 ,-0.03);
         }
       }
     }else{
@@ -137,16 +137,18 @@ public class Robot extends TimedRobot {
       drive.driveCartesian(0,0,0);
     }
 
-    
-
     double wheelCircumference = 0.1524 * Math.PI;
     double ballDistance = 0.451 * Math.abs(Math.tan(tx));
     double wheelTurnsToBall = ballDistance / wheelCircumference;
 
-    if (ballDistance > 0){
+    /*
+    while (ballDistance > 0){
 
-      drive.driveCartesian(0, wheelTurnsToBall*0.5, 0);
+      drive.driveCartesian(0, 0.5, 0);
+      intakeController.set(0.5);
+      tx = table.getEntry("tx").getDouble(0); 
     }
+    */
   }
 
   /** This function is called once when teleop is enabled. */
