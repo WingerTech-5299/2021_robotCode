@@ -12,8 +12,11 @@ import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.networktables.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+<<<<<<< Updated upstream
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+=======
+>>>>>>> Stashed changes
 import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -39,8 +42,8 @@ public class Robot extends TimedRobot {
 
   //ErrorCode = leftControllerB.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
 
-  XboxController Xbox = new XboxController(0);
-  Joystick joy = new Joystick(1);
+  XboxController Xbox = new XboxController(1);
+  Joystick joy = new Joystick(0);
 
   Boolean btnIntakeReverse = joy.getRawButton(1);
   Boolean btnIntake = joy.getRawButton(0);
@@ -189,8 +192,14 @@ public class Robot extends TimedRobot {
 
     }
 
-    drive.driveCartesian(0.5*btnDriveLR, -0.5*btnDriveFB, 0.5*btnDriveSpin);
+    drive.driveCartesian(0.6*btnDriveLR, -0.6*btnDriveFB, 0.6*btnDriveSpin);
 
+    // leftControllerF.set(ControlMode.PercentOutput, 2.2666 );
+    // rightControllerB.set(ControlMode.PercentOutput, 2.2666);
+    // leftControllerB.set(ControlMode.PercentOutput, 2.2666);
+    // rightControllerB.set(ControlMode.PercentOutput, 2.2666);
+    // this does not work with the firmwere on talons CW 3/16/21(its out of date code)
+  
   }
 
   /** This function is called once when the robot is disabled. */
