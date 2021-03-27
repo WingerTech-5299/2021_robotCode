@@ -105,6 +105,8 @@ public class Robot extends TimedRobot {
 
     intakeController.setInverted(true);
 
+    table.getEntry("pipeline").setNumber(0);
+
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
