@@ -12,11 +12,9 @@ import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.networktables.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-<<<<<<< Updated upstream
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-=======
->>>>>>> Stashed changes
+
 import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -125,7 +123,7 @@ public class Robot extends TimedRobot {
 
     if (tv == 1){
 
-      while (Math.abs(tx) > 0){
+      while (Math.abs(tx) > 0.1){
 
         if(tx > 0){
 
@@ -173,6 +171,9 @@ public class Robot extends TimedRobot {
     btnIntakeReverse = joy.getRawButton(2);
     btnIntake = joy.getRawButton(1);
     btnIntakeSpeed = joy.getRawAxis(3);
+
+   
+
 
     if (btnIntake == true){
 

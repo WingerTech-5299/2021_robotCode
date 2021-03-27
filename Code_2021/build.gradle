@@ -47,7 +47,7 @@ repositories {
     maven { url 'https://nexus.otake.pw/repository/maven-public/'}
 }
 dependencies {
-    implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.4.1'
+    
     implementation wpi.deps.wpilib()
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
