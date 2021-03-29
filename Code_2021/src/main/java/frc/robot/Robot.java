@@ -5,8 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.networktables.*;
@@ -19,7 +17,6 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 /**
@@ -35,6 +32,9 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
   WPI_VictorSPX intakeController = new WPI_VictorSPX(15);
+
+  Double leftEncoderB = leftControllerB.getSelectedSensorPosition();
+  Double rightEncoderB = rightControllerB.getSelectedSensorPosition();
   
   Faults _faults = new Faults();
 
@@ -43,9 +43,8 @@ public class Robot extends TimedRobot {
   XboxController Xbox = new XboxController(1);
   Joystick joy = new Joystick(0);
 
-  Boolean btnIntakeReverse = joy.getRawButton(1);
-  Boolean btnIntake = joy.getRawButton(0);
-  Double btnIntakeSpeed = joy.getRawAxis(3);
+  Double btnIntakeReverse = Xbox.getRawAxis(2);
+  Double btnIntake = Xbox.getRawAxis(3);
 
   Double btnDriveFB = Xbox.getRawAxis(5);
   Double btnDriveSpin = Xbox.getRawAxis(0);
@@ -60,11 +59,6 @@ public class Robot extends TimedRobot {
   Double ta = table.getEntry("ta").getDouble(0);
   Double ts = table.getEntry("ts").getDouble(0);
 
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -72,9 +66,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+
+    leftControllerB.setSensorPhase(true);
+    rightControllerB.setSensorPhase(true);
   }
 
 
@@ -88,7 +82,9 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -106,15 +102,16 @@ public class Robot extends TimedRobot {
     intakeController.setInverted(true);
 
     table.getEntry("pipeline").setNumber(0);
-
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
+    drive.feed();
+
+    //rightEncoderB = rightControllerB.getSelectedSensorPosition();
+    //leftEncoderB = leftControllerB.getSelectedSensorPosition();
 
     tv = table.getEntry("tv").getDouble(0);
     ty = table.getEntry("ty").getDouble(0);
@@ -122,6 +119,30 @@ public class Robot extends TimedRobot {
     ts = table.getEntry("ts").getDouble(0);
     
     intakeController.set(1);
+
+    if (tv == 0){
+
+      drive.driveCartesian(0, 1, 0);
+      Timer.delay(1);
+      if (tv == 1){
+        drive.driveCartesian(0, 0, 0);
+        return;
+      }else{
+        drive.driveCartesian(0, 0, 0.3);
+        Timer.delay(0.5);
+        if (tv == 1){
+          drive.driveCartesian(0, 0, 0);
+          return;
+        }else{
+          drive.driveCartesian(0, 0, -0.3);
+          Timer.delay(0.8);
+          if (tv == 1){
+            drive.driveCartesian(0, 0, 0);
+          }
+        }
+      }
+    }
+
 
     if (tv == 1){
 
@@ -157,9 +178,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-
-    leftControllerB.setSensorPhase(true);
-    rightControllerB.setSensorPhase(true);
     
   }
 
@@ -170,39 +188,31 @@ public class Robot extends TimedRobot {
     btnDriveFB = Xbox.getRawAxis(5);
     btnDriveSpin = Xbox.getRawAxis(0);
     btnDriveLR = Xbox.getRawAxis(4);
-    btnIntakeReverse = joy.getRawButton(2);
-    btnIntake = joy.getRawButton(1);
-    btnIntakeSpeed = joy.getRawAxis(3);
+    btnIntakeReverse = Xbox.getRawAxis(3);
+    btnIntake = Xbox.getRawAxis(2);
 
    
 
 
-    if (btnIntake == true){
+    if (btnIntake > 0.1){
 
-      intakeController.set(0.7 * btnIntakeSpeed);
+      intakeController.set(0.7 * btnIntake);
 
-    }else if (btnIntakeReverse == true){
+    }else if (btnIntakeReverse > 0.1){
 
-      intakeController.set(-0.7 * btnIntakeSpeed);
+      intakeController.set(-0.7 * btnIntakeReverse);
 
-    }else if (btnIntake == false){
+    }else if (btnIntake < 0.1){
 
       intakeController.set(0);
 
-    }else if (btnIntakeReverse == false){
+    }else if (btnIntakeReverse < 0.1){
 
       intakeController.set(0);
 
     }
 
-    drive.driveCartesian(0.6*btnDriveLR, -0.6*btnDriveFB, 0.6*btnDriveSpin);
-
-    // leftControllerF.set(ControlMode.PercentOutput, 2.2666 );
-    // rightControllerB.set(ControlMode.PercentOutput, 2.2666);
-    // leftControllerB.set(ControlMode.PercentOutput, 2.2666);
-    // rightControllerB.set(ControlMode.PercentOutput, 2.2666);
-    // this does not work with the firmwere on talons CW 3/16/21(its out of date code)
-  
+    drive.driveCartesian(0.6*btnDriveLR, -0.6*btnDriveFB, 0.6*btnDriveSpin);  
   }
 
   /** This function is called once when the robot is disabled. */
