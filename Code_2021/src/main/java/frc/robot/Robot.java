@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.kinematics.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -57,7 +58,6 @@ public class Robot extends TimedRobot {
   Double tx = table.getEntry("tx").getDouble(0);
   Double ty = table.getEntry("ty").getDouble(0);
   Double ta = table.getEntry("ta").getDouble(0);
-  Double ts = table.getEntry("ts").getDouble(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -108,6 +108,10 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
+    SmartDashboard.putNumber("LimelightX", tx);
+    SmartDashboard.putNumber("LimelightY", ty);
+    SmartDashboard.putNumber("LimelightArea", ta);
+
     drive.feed();
 
     //rightEncoderB = rightControllerB.getSelectedSensorPosition();
@@ -116,7 +120,6 @@ public class Robot extends TimedRobot {
     tv = table.getEntry("tv").getDouble(0);
     ty = table.getEntry("ty").getDouble(0);
     ta = table.getEntry("ta").getDouble(0);
-    ts = table.getEntry("ts").getDouble(0);
     
     intakeController.set(1);
 
