@@ -7,18 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.kinematics.*;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 
-import javax.annotation.meta.When;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.Faults;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-
 import com.ctre.phoenix.motorcontrol.can.*;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
@@ -29,6 +23,10 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  private static final String kDefaultAuto = "Default";
+  private static final String kCustomAuto = "My Auto";
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
    
   WPI_TalonSRX leftControllerF = new WPI_TalonSRX(11);
   WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
@@ -38,8 +36,6 @@ public class Robot extends TimedRobot {
 
   Double leftEncoderB = leftControllerB.getSelectedSensorPosition();
   Double rightEncoderB = rightControllerB.getSelectedSensorPosition();
-  
-  Faults _faults = new Faults();
 
   //ErrorCode = leftControllerB.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
 
@@ -59,6 +55,12 @@ public class Robot extends TimedRobot {
   Double tx = table.getEntry("tx").getDouble(0);
   Double ty = table.getEntry("ty").getDouble(0);
   Double ta = table.getEntry("ta").getDouble(0);
+
+
+
+  public void AutoFind(Double taFind, Double tsFind){
+
+  }
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -124,6 +126,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LimelightArea", ta);
 
     intakeController.set(1);
+
+    AutoFind(tx, ta);
 
     while (tv == 0){
 
@@ -227,9 +231,5 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
-
-  public void AutoFind(Double taFind, Double tsFind){
-
-  }
 
 }
