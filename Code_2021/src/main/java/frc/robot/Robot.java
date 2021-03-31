@@ -122,7 +122,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LimelightX", tx);
     SmartDashboard.putNumber("LimelightY", ty);
     SmartDashboard.putNumber("LimelightArea", ta);
-
+    
+    
     intakeController.set(1);
 
     while (tv == 0){
@@ -166,6 +167,9 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+
+    leftControllerB.setSelectedSensorPosition(0);
+    rightControllerB.setSelectedSensorPosition(0);
     
   }
 
@@ -178,8 +182,10 @@ public class Robot extends TimedRobot {
     btnDriveLR = Xbox.getRawAxis(4);
     btnIntakeReverse = Xbox.getRawAxis(3);
     btnIntake = Xbox.getRawAxis(2);
-
-   
+    
+    SmartDashboard.putNumber("encoderR",rightControllerB.getSelectedSensorPosition());
+    SmartDashboard.putNumber("encoderL",leftControllerB.getSelectedSensorPosition());
+     
 
 
     if (btnIntake > 0.1){
