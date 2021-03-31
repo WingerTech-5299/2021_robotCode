@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 
+import javax.annotation.meta.When;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -41,8 +43,7 @@ public class Robot extends TimedRobot {
 
   //ErrorCode = leftControllerB.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
 
-  XboxController Xbox = new XboxController(1);
-  Joystick joy = new Joystick(0);
+  XboxController Xbox = new XboxController(0);
 
   Double btnIntakeReverse = Xbox.getRawAxis(2);
   Double btnIntake = Xbox.getRawAxis(3);
@@ -108,9 +109,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    SmartDashboard.putNumber("LimelightX", tx);
-    SmartDashboard.putNumber("LimelightY", ty);
-    SmartDashboard.putNumber("LimelightArea", ta);
 
     drive.feed();
 
@@ -121,31 +119,18 @@ public class Robot extends TimedRobot {
     ty = table.getEntry("ty").getDouble(0);
     ta = table.getEntry("ta").getDouble(0);
     
+    SmartDashboard.putNumber("LimelightX", tx);
+    SmartDashboard.putNumber("LimelightY", ty);
+    SmartDashboard.putNumber("LimelightArea", ta);
+
     intakeController.set(1);
 
-    if (tv == 0){
+    while (tv == 0){
 
-      drive.driveCartesian(0, 1, 0);
-      Timer.delay(1);
-      if (tv == 1){
-        drive.driveCartesian(0, 0, 0);
-        return;
-      }else{
-        drive.driveCartesian(0, 0, 0.3);
-        Timer.delay(0.5);
-        if (tv == 1){
-          drive.driveCartesian(0, 0, 0);
-          return;
-        }else{
-          drive.driveCartesian(0, 0, -0.3);
-          Timer.delay(0.8);
-          if (tv == 1){
-            drive.driveCartesian(0, 0, 0);
-          }
-        }
-      }
+      drive.driveCartesian(0, 0.4, 0);
     }
 
+    drive.driveCartesian(0, 0, 0);
 
     if (tv == 1){
 
@@ -224,7 +209,16 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    
+    tv = table.getEntry("tv").getDouble(0);
+    ty = table.getEntry("ty").getDouble(0);
+    ta = table.getEntry("ta").getDouble(0);
+    
+    SmartDashboard.putNumber("LimelightX", tx);
+    SmartDashboard.putNumber("LimelightY", ty);
+    SmartDashboard.putNumber("LimelightArea", ta);
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
@@ -233,5 +227,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  public void AutoFind(Double taFind, Double tsFind){
+
+  }
 
 }
