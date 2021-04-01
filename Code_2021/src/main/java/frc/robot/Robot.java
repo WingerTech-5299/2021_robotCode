@@ -114,9 +114,6 @@ public class Robot extends TimedRobot {
 
     drive.feed();
 
-    //rightEncoderB = rightControllerB.getSelectedSensorPosition();
-    //leftEncoderB = leftControllerB.getSelectedSensorPosition();
-
     tv = table.getEntry("tv").getDouble(0);
     ty = table.getEntry("ty").getDouble(0);
     ta = table.getEntry("ta").getDouble(0);
@@ -125,7 +122,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LimelightY", ty);
     SmartDashboard.putNumber("LimelightArea", ta);
 
-    intakeController.set(1);
+    intakeController.set(0.6);
 
     AutoFind(tx, ta);
 
