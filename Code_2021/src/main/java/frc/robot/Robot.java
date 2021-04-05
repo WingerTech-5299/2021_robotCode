@@ -5,25 +5,21 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.kinematics.*;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.Faults;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+
 import com.ctre.phoenix.motorcontrol.can.*;
-import edu.wpi.first.wpilibj.Joystick;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
+
 public class Robot extends TimedRobot {
+
+  private static final String kDefaultAuto = "Default";
+  private static final String kCustomAuto = "My Auto";
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
    
   WPI_TalonSRX leftControllerF = new WPI_TalonSRX(11);
   WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
@@ -31,12 +27,8 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX rightControllerB = new WPI_TalonSRX(14);
   WPI_VictorSPX intakeController = new WPI_VictorSPX(15);
 
-  Double leftEncoderB = leftControllerB.getSelectedSensorPosition();
-  Double rightEncoderB = rightControllerB.getSelectedSensorPosition();
-  
-  Faults _faults = new Faults();
-
-  //ErrorCode = leftControllerB.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+  Double leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
+  Double rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
 
   XboxController Xbox = new XboxController(0);
 
@@ -55,7 +47,27 @@ public class Robot extends TimedRobot {
   Double ty = table.getEntry("ty").getDouble(0);
   Double ta = table.getEntry("ta").getDouble(0);
 
-  int Timer;public static void AutoCW(){}
+  public void autoFind(){
+
+    while (tv == 0){
+      leftControllerB.setSelectedSensorPosition(0);
+      rightControllerB.setSelectedSensorPosition(0);
+
+      rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
+      leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
+
+      if (leftEncoderPosition < 0 && rightEncoderPosition > 0){
+
+      }
+
+    }
+
+  }
+
+  public void autoPickUp(Double txFind, Double tFind){
+    
+
+  }
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -100,6 +112,9 @@ public class Robot extends TimedRobot {
     intakeController.setInverted(true);
 
     table.getEntry("pipeline").setNumber(0);
+
+    rightControllerB.setSelectedSensorPosition(0);
+    leftControllerB.setSelectedSensorPosition(0);
   }
 
   /** This function is called periodically during autonomous. */
@@ -109,88 +124,27 @@ public class Robot extends TimedRobot {
 
     drive.feed();
 
-    //rightEncoderB = rightControllerB.getSelectedSensorPosition();
-    //leftEncoderB = leftControllerB.getSelectedSensorPosition();
-
     tv = table.getEntry("tv").getDouble(0);
+    tx = table.getEntry("tx").getDouble(0);
     ty = table.getEntry("ty").getDouble(0);
     ta = table.getEntry("ta").getDouble(0);
     
     SmartDashboard.putNumber("LimelightX", tx);
     SmartDashboard.putNumber("LimelightY", ty);
     SmartDashboard.putNumber("LimelightArea", ta);
-    
-    
-    intakeController.set(1);
 
-    while (tv == 0){
+    intakeController.set(0.6);
 
-      drive.driveCartesian(0, 0.4, 0);
-    }
-
-    drive.driveCartesian(0, 0, 0);
-
-    if (tv == 1){
-
-      while (Math.abs(tx) > 0.1){
-
-        if(tx > 0){
-
-          drive.driveCartesian(0.5, 0, 0.04);
-        }else{
-
-          drive.driveCartesian(-0.5, 0 ,-0.03);
-        }
-      }
+    if (tv != 1){
+      autoFind();
     }else{
-
-      drive.driveCartesian(0,0,0);
+      autoPickUp(tx, ta);
     }
+  }
 
-    double wheelCircumference = 0.1524 * Math.PI;
-    double ballDistance = 0.451 * Math.abs(Math.tan(tx));
-    double wheelTurnsToBall = ballDistance / wheelCircumference;
-
-    /*
-    while (ballDistance > 0){
-
-      drive.driveCartesian(0, 0.5, 0);
-      intakeController.set(0.5);
-      tx = table.getEntry("tx").getDouble(0); 
-    }
-    */
-    //Caydens auto code
-
-
-if (Timer < 1.5) {drive.driveCartesian(0, 0.5, 0);}
-else if (Timer > 1.5) {drive.driveCartesian(0, 0, 0);}
-
-
-
-
-
-
-
-leftControllerB.setSelectedSensorPosition(0);
-rightControllerB.setSelectedSensorPosition(0);
-}
-
-
-  
-
-
-
-
-
- 
-  /** This %function is called once when teleop is enabled. */
+  /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-
-    leftControllerB.setSelectedSensorPosition(0);
-    rightControllerB.setSelectedSensorPosition(0);
-
-    table.getEntry("camMode").setValue(1);
     
   }
 
@@ -203,10 +157,8 @@ rightControllerB.setSelectedSensorPosition(0);
     btnDriveLR = Xbox.getRawAxis(4);
     btnIntakeReverse = Xbox.getRawAxis(3);
     btnIntake = Xbox.getRawAxis(2);
-    
-    SmartDashboard.putNumber("encoderR",rightControllerB.getSelectedSensorPosition());
-    SmartDashboard.putNumber("encoderL",leftControllerB.getSelectedSensorPosition());
-     
+
+   
 
 
     if (btnIntake > 0.1){
@@ -254,33 +206,5 @@ rightControllerB.setSelectedSensorPosition(0);
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
-
-  public void AutoFind(Double taFind, Double tsFind){
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
