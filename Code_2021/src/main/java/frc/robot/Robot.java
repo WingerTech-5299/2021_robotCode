@@ -9,15 +9,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
-
-import javax.annotation.meta.When;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-
 import com.ctre.phoenix.motorcontrol.can.*;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -59,6 +54,8 @@ public class Robot extends TimedRobot {
   Double tx = table.getEntry("tx").getDouble(0);
   Double ty = table.getEntry("ty").getDouble(0);
   Double ta = table.getEntry("ta").getDouble(0);
+
+  int Timer;public static void AutoCW(){}
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -162,14 +159,38 @@ public class Robot extends TimedRobot {
       tx = table.getEntry("tx").getDouble(0); 
     }
     */
-  }
+    //Caydens auto code
 
-  /** This function is called once when teleop is enabled. */
+
+if (Timer < 1.5) {drive.driveCartesian(0, 0.5, 0);}
+else if (Timer > 1.5) {drive.driveCartesian(0, 0, 0);}
+
+
+
+
+
+
+
+leftControllerB.setSelectedSensorPosition(0);
+rightControllerB.setSelectedSensorPosition(0);
+}
+
+
+  
+
+
+
+
+
+ 
+  /** This %function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
 
     leftControllerB.setSelectedSensorPosition(0);
     rightControllerB.setSelectedSensorPosition(0);
+
+    table.getEntry("camMode").setValue(1);
     
   }
 
@@ -237,5 +258,29 @@ public class Robot extends TimedRobot {
   public void AutoFind(Double taFind, Double tsFind){
 
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
