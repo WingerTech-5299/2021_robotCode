@@ -5,21 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 
 import com.ctre.phoenix.motorcontrol.can.*;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 
 public class Robot extends TimedRobot {
-
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
    
   WPI_TalonSRX leftControllerF = new WPI_TalonSRX(11);
   WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
@@ -46,6 +41,15 @@ public class Robot extends TimedRobot {
   Double tx = table.getEntry("tx").getDouble(0);
   Double ty = table.getEntry("ty").getDouble(0);
   Double ta = table.getEntry("ta").getDouble(0);
+  
+  Boolean targetTest;
+
+  public void zeroEncoder(){
+
+    rightControllerB.setSelectedSensorPosition(0);
+    leftControllerB.setSelectedSensorPosition(0);
+
+  }
 
   public void autoFind(){
 
@@ -56,16 +60,57 @@ public class Robot extends TimedRobot {
       rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
       leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
 
-      if (leftEncoderPosition < 0 && rightEncoderPosition > 0){
+      while ((rightControllerB.getSelectedSensorPosition() > -7000 && leftControllerB.getSelectedSensorPosition() > -7000) || (table.getEntry("tv").getDouble(0) == 0)){
+        tv = table.getEntry("tv").getDouble(0);
+        rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
+        leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
 
-      }
+        SmartDashboard.putNumber("EncoderR", rightEncoderPosition);
+        SmartDashboard.putNumber("EncoderL", leftEncoderPosition);
+
+      
+        drive.driveCartesian(0, 0, -0.5);
+        }
+
+      while ((rightControllerB.getSelectedSensorPosition() < 7000 && leftControllerB.getSelectedSensorPosition() < 7000) || (table.getEntry("tv").getDouble(0) == 0)){
+          tv = table.getEntry("tv").getDouble(0);
+          rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
+          leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
+  
+          SmartDashboard.putNumber("EncoderR", rightEncoderPosition);
+          SmartDashboard.putNumber("EncoderL", leftEncoderPosition);
+  
+        
+          drive.driveCartesian(0, 0, 0.5);
+          }
+
+      drive.driveCartesian(0, 0, 0);
 
     }
 
   }
 
-  public void autoPickUp(Double txFind, Double tFind){
-    
+  public void autoPickUp(Double txFind, Double tyFind){
+
+    while (Math.abs(tx) > 0.2){
+
+      if (tx > 0){
+        drive.driveCartesian(0, 0, 0.5);
+      } else {
+        drive.driveCartesian(0, 0, 0.5);
+      }
+    }
+
+    Double balldistance = 17.75/Math.tan(ty);
+    Double unitsToBall = (balldistance/(Math.PI * 6)) * 4096;
+
+    zeroEncoder();
+
+    while (rightControllerB.getSelectedSensorPosition() < unitsToBall && leftControllerB.getSelectedSensorPosition() < 0){
+
+      drive.driveCartesian(0, 0.5, 0);
+
+    }
 
   }
 
@@ -80,7 +125,6 @@ public class Robot extends TimedRobot {
     leftControllerB.setSensorPhase(true);
     rightControllerB.setSensorPhase(true);
 
-    
   }
 
 
@@ -95,6 +139,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
+    leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
 
   }
 
@@ -114,15 +161,23 @@ public class Robot extends TimedRobot {
     intakeController.setInverted(true);
 
     table.getEntry("pipeline").setNumber(0);
+    
+    int ballCount = 0;
 
-    rightControllerB.setSelectedSensorPosition(0);
-    leftControllerB.setSelectedSensorPosition(0);
+    while (ballCount < 3){
+      ballCount ++;
+
+      
+    autoFind();
+    autoPickUp(tx, ty);
+    }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
 
+    
 
     drive.feed();
 
@@ -135,18 +190,15 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LimelightY", ty);
     SmartDashboard.putNumber("LimelightArea", ta);
 
-    intakeController.set(0.6);
-
-    if (tv != 1){
-      autoFind();
-    }else{
-      autoPickUp(tx, ta);
-    }
+    //intakeController.set(0.6);
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+
+    leftControllerB.setSelectedSensorPosition(0);
+    rightControllerB.setSelectedSensorPosition(0);
     
   }
 
@@ -193,9 +245,21 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     
     tv = table.getEntry("tv").getDouble(0);
+    tx = table.getEntry("tx").getDouble(0);
     ty = table.getEntry("ty").getDouble(0);
     ta = table.getEntry("ta").getDouble(0);
+
+    if (tv == 1){
+
+      targetTest = true;
+
+    } else {
+
+      targetTest = false;
+
+    }
     
+    SmartDashboard.putBoolean("Limelight Has Target ", targetTest);
     SmartDashboard.putNumber("LimelightX", tx);
     SmartDashboard.putNumber("LimelightY", ty);
     SmartDashboard.putNumber("LimelightArea", ta);
@@ -203,10 +267,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+  }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {  }
 
 }
