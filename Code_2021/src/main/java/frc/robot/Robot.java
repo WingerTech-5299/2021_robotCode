@@ -13,11 +13,8 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 import edu.wpi.first.wpilibj.XboxController;
 
-import frc.robot.autoMethods;
+public class Robot extends TimedRobot{
 
-
-public class Robot extends TimedRobot {
-   
   WPI_TalonSRX leftControllerF = new WPI_TalonSRX(11);
   WPI_TalonSRX rightControllerF = new WPI_TalonSRX(12);
   WPI_TalonSRX leftControllerB = new WPI_TalonSRX(13);
@@ -46,10 +43,33 @@ public class Robot extends TimedRobot {
   
   Boolean targetTest;
 
+  Boolean targetFind;
+
+  Double spinSpeed;
+  
+  int ballCount = 0;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
+   private Double spinAdjust(){
+
+    addPeriodic (() -> {
+      Double absDifference = Math.abs(leftControllerB.getSelectedSensorPosition()) - Math.abs(rightControllerB.getSelectedSensorPosition());
+
+      if (absDifference > 1000){
+       spinSpeed = 0.5;
+      } else {
+       spinSpeed = 0.0;
+    }
+
+    }, 0.01, 0.005);
+
+    return spinSpeed;
+    
+  }
 
   @Override
   public void robotInit() {
@@ -93,17 +113,22 @@ public class Robot extends TimedRobot {
     intakeController.setInverted(true);
 
     table.getEntry("pipeline").setNumber(0);
-    
-    int ballCount = 0;
+    table.getEntry("ledMode").setNumber(3);
 
-    while (ballCount < 3){
-      ballCount ++;
-    }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
+    while (ballCount < 3){
+
+      autoFind(leftControllerB, rightControllerB, drive);
+
+      autoPickUp(rightControllerB, leftControllerB, drive);
+      
+      ballCount ++;
+    }
 
     drive.feed();
 
@@ -116,7 +141,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LimelightY", ty);
     SmartDashboard.putNumber("LimelightArea", ta);
 
-    //intakeController.set(0.6);
+    intakeController.set(0.6);
   }
 
   /** This function is called once when teleop is enabled. */
@@ -198,7 +223,84 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {  }
+  public void testPeriodic() {}
 
+  private void autoFind(TalonSRX leftControllerB, TalonSRX rightControllerB, MecanumDrive drive){
+
+    leftControllerB.setSelectedSensorPosition(0);
+    rightControllerB.setSelectedSensorPosition(0);
+
+    while (table.getEntry("tv").getDouble(0) == 0){
+      leftControllerB.setSelectedSensorPosition(0);
+      rightControllerB.setSelectedSensorPosition(0);
+
+      Double  rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
+      Double leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
+
+      while ((rightControllerB.getSelectedSensorPosition() > -3000 && leftControllerB.getSelectedSensorPosition() > -3000) || table.getEntry("tv").getDouble(0) == 0){
+
+        rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
+        leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
+
+        SmartDashboard.putNumber("EncoderR", rightEncoderPosition);
+        SmartDashboard.putNumber("EncoderL", leftEncoderPosition);
+
+      
+        drive.driveCartesian(0, 0, -0.5);
+        }
+
+      while ((rightControllerB.getSelectedSensorPosition() < 3000 && leftControllerB.getSelectedSensorPosition() < 3000) || (table.getEntry("tv").getDouble(0) == 0)){
+
+          rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
+          leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
+  
+          SmartDashboard.putNumber("EncoderR", rightEncoderPosition);
+          SmartDashboard.putNumber("EncoderL", leftEncoderPosition);
+  
+        
+          drive.driveCartesian(0, 0, 0.5);
+          }
+
+      while ((rightControllerB.getSelectedSensorPosition() > 0 && leftControllerB.getSelectedSensorPosition() > 0) || table.getEntry("tv").getDouble(0) == 0){
+        drive.driveCartesian(0, 0, -0.5);
+      }
+
+      leftControllerB.setSelectedSensorPosition(0);
+      rightControllerB.setSelectedSensorPosition(0);
+
+      while (table.getEntry("tv").getDouble(0) == 0){
+         drive.driveCartesian(0, 0.5, spinAdjust());
+      }
+
+      drive.driveCartesian(0, 0, 0);
+
+    }
+
+  }      
+
+  private void autoPickUp(TalonSRX rightControllerB, TalonSRX leftControllerB, MecanumDrive drive){
+
+    while (Math.abs(table.getEntry("tx").getDouble(0)) > 0.2){
+
+      if (table.getEntry("tx").getDouble(0) > 0){
+        drive.driveCartesian(0, 0, 0.5);
+      } else {
+        drive.driveCartesian(0, 0, 0.5);
+      }
+    }
+
+    Double balldistance = 17.75/Math.tan(table.getEntry("ty").getDouble(0));
+    Double unitsToBall = (balldistance/(Math.PI * 6)) * 4096;      
+
+    rightControllerB.setSelectedSensorPosition(0);
+    leftControllerB.setSelectedSensorPosition(0);
+
+    while (rightControllerB.getSelectedSensorPosition() < unitsToBall && leftControllerB.getSelectedSensorPosition() < unitsToBall){
+
+      drive.driveCartesian(0, 0.5, spinAdjust());
+
+    }
+  
+  }
 
 }
