@@ -31,7 +31,9 @@ public class Robot extends TimedRobot{
 
   Double btnDriveFB = Xbox.getRawAxis(5);
   Double btnDriveSpin = Xbox.getRawAxis(0);
-  Double btnDriveLR = Xbox.getRawAxis(4);  
+  Double btnDriveLR = Xbox.getRawAxis(4); 
+
+  Boolean btnEncoderReset = Xbox.getRawButton(3);
 
   MecanumDrive drive = new MecanumDrive(leftControllerF, leftControllerB, rightControllerF, rightControllerB);
 
@@ -112,6 +114,9 @@ public class Robot extends TimedRobot{
 
     intakeController.setInverted(true);
 
+    rightControllerB.setSelectedSensorPosition(0);
+    leftControllerB.setSelectedSensorPosition(0);
+
     table.getEntry("pipeline").setNumber(0);
     table.getEntry("ledMode").setNumber(3);
 
@@ -121,14 +126,7 @@ public class Robot extends TimedRobot{
   @Override
   public void autonomousPeriodic() {
 
-    while (ballCount < 3){
-
-      autoFind(leftControllerB, rightControllerB, drive);
-
-      autoPickUp(rightControllerB, leftControllerB, drive);
-      
-      ballCount ++;
-    }
+    autoRun();
 
     drive.feed();
 
@@ -156,6 +154,14 @@ public class Robot extends TimedRobot{
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    SmartDashboard.putNumber("LEncoder", leftControllerB.getSelectedSensorPosition());
+    SmartDashboard.putNumber("REncoder", rightControllerB.getSelectedSensorPosition());
+
+    if (btnEncoderReset){
+      leftControllerB.setSelectedSensorPosition(0);
+      rightControllerB.setSelectedSensorPosition(0);
+    }
 
     btnDriveFB = Xbox.getRawAxis(5);
     btnDriveSpin = Xbox.getRawAxis(0);
@@ -225,6 +231,27 @@ public class Robot extends TimedRobot{
   @Override
   public void testPeriodic() {}
 
+  public void autoRun(){
+
+    ballCount = 0;
+
+    while (ballCount < 3){
+
+      autoFind(leftControllerB, rightControllerB, drive);
+
+      autoPickUp(rightControllerB, leftControllerB, drive);
+
+      ballCount ++;
+    }
+
+  }
+
+
+//Begin autoFind Method ---------------------------------------------------------------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   private void autoFind(TalonSRX leftControllerB, TalonSRX rightControllerB, MecanumDrive drive){
 
     leftControllerB.setSelectedSensorPosition(0);
@@ -249,7 +276,10 @@ public class Robot extends TimedRobot{
         drive.driveCartesian(0, 0, -0.5);
         }
 
-      while ((rightControllerB.getSelectedSensorPosition() < 3000 && leftControllerB.getSelectedSensorPosition() < 3000) || (table.getEntry("tv").getDouble(0) == 0)){
+        leftControllerB.setSelectedSensorPosition(0);
+        rightControllerB.setSelectedSensorPosition(0);
+
+      while ((rightControllerB.getSelectedSensorPosition() < 6000 && leftControllerB.getSelectedSensorPosition() < 6000) || (table.getEntry("tv").getDouble(0) == 0)){
 
           rightEncoderPosition = rightControllerB.getSelectedSensorPosition();
           leftEncoderPosition = leftControllerB.getSelectedSensorPosition();
@@ -260,8 +290,11 @@ public class Robot extends TimedRobot{
         
           drive.driveCartesian(0, 0, 0.5);
           }
+          
+        leftControllerB.setSelectedSensorPosition(0);
+        rightControllerB.setSelectedSensorPosition(0);
 
-      while ((rightControllerB.getSelectedSensorPosition() > 0 && leftControllerB.getSelectedSensorPosition() > 0) || table.getEntry("tv").getDouble(0) == 0){
+      while (rightControllerB.getSelectedSensorPosition() > -3000 || table.getEntry("tv").getDouble(0) == 0){
         drive.driveCartesian(0, 0, -0.5);
       }
 
@@ -283,7 +316,7 @@ public class Robot extends TimedRobot{
     while (Math.abs(table.getEntry("tx").getDouble(0)) > 0.2){
 
       if (table.getEntry("tx").getDouble(0) > 0){
-        drive.driveCartesian(0, 0, 0.5);
+        drive.driveCartesian(0, 0, -0.5);
       } else {
         drive.driveCartesian(0, 0, 0.5);
       }
